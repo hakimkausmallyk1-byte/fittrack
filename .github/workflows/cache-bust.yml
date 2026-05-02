@@ -1,26 +1,38 @@
+name: Auto cache bust on deploy
 
-name: Auto cache bust
-
-on:
+"on":
   push:
     branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   bust:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Inject cache version
+      - name: Generate version from timestamp
+        id: version
+        run: echo "VERSION=$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
+
+      - name: Inject version into sw.js
         run: |
-          VERSION=$(date +%Y%m%d%H%M%S)
-          sed -i "s/%%CACHE_VERSION%%/$VERSION/g" sw.js
-          echo "Cache version: fittrack-$VERSION"
+          sed -i "s/%%CACHE_VERSION%%/${{ steps.version.outputs.VERSION }}/g" sw.js
+          echo "Injected version: ${{ steps.version.outputs.VERSION }}"
 
-      - name: Commit updated sw.js
+      - name: Commit and push updated sw.js
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add sw.js
-          git diff --staged --quiet || git commit -m "chore: cache bust $VERSION"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: cache bust ${{ steps.version.outputs.VERSION }} [skip ci]"
+            git push
+          fi
