@@ -23,13 +23,13 @@
   --r8:8px;--r12:12px;--r16:16px;--r20:20px;
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
-body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.5}
-#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto}
-.page{display:none;flex:1;overflow-y:auto;padding-bottom:calc(72px + var(--safe-bottom))}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;font-size:14px;line-height:1.5}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;position:relative}
+.page{display:none;flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(80px + var(--safe-bottom));min-height:0}
 .page.active{display:block}
 
 /* NAV — 6 tabs, scrollable, large tap targets */
-nav{display:flex;background:rgba(14,14,18,.97);border-top:1px solid var(--border);padding:4px 0;padding-bottom:calc(6px + var(--safe-bottom));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav{display:flex;background:rgba(14,14,18,.97);border-top:1px solid var(--border);padding:4px 0;padding-bottom:calc(6px + var(--safe-bottom));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:200;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 nav::-webkit-scrollbar{display:none}
 .nb{flex:0 0 80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;color:var(--muted);font-size:9px;background:none;border:none;font-family:'Outfit',sans-serif;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:48px}
 .nb.on{color:var(--accent)}
@@ -140,8 +140,8 @@ nav::-webkit-scrollbar{display:none}
 .toggle.on::after{transform:translateX(18px)}
 
 /* MODALS */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,12,.93);z-index:300;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bottom)}
-.modal-overlay.show{display:flex}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,12,.93);z-index:300;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bottom);pointer-events:none}
+.modal-overlay.show{display:flex;pointer-events:all}
 .modal{background:#17171C;border:1px solid var(--border);border-radius:var(--r20) var(--r20) 0 0;padding:24px 20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
 .modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.3px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
 .modal-close{font-size:20px;cursor:pointer;background:none;border:none;color:var(--muted);line-height:1}
@@ -423,10 +423,10 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <button class="pill-ghost" onclick="clearChat()">Effacer</button>
   </div>
   <div id="chat-messages" style="padding:0 14px;display:flex;flex-direction:column;gap:10px;min-height:200px"></div>
-  <div style="height:100px"></div>
-  <div style="position:sticky;bottom:72px;padding:10px 14px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px;z-index:40">
-    <input type="text" id="chat-input" placeholder="Pose une question à ton coach..." style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r12);padding:10px 14px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif" onkeydown="if(event.key==='Enter')sendChat()"/>
-    <button class="btn-primary" style="padding:10px 16px;border-radius:var(--r12)" onclick="sendChat()">
+  <div style="height:16px"></div>
+  <div style="padding:10px 14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r16);margin:0 14px 14px;display:flex;gap:8px">
+    <input type="text" id="chat-input" placeholder="Pose une question à ton coach..." style="flex:1;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;outline:none" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="btn-primary" style="padding:8px 14px;border-radius:var(--r8);flex-shrink:0" onclick="sendChat()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
@@ -447,7 +447,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     </div>
   </div>
 </div>
-</div><!-- /app -->
 
 <!-- ===== BOTTOM NAV ===== -->
 <nav>
@@ -470,6 +469,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Params
   </button>
 </nav>
+</div><!-- /app -->
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
