@@ -28,9 +28,10 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .page{display:none;flex:1;overflow-y:auto;padding-bottom:calc(72px + var(--safe-bottom))}
 .page.active{display:block}
 
-/* NAV */
-nav{display:flex;background:rgba(14,14,18,.97);border-top:1px solid var(--border);padding:6px 0;padding-bottom:calc(8px + var(--safe-bottom));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;color:var(--muted);font-size:10px;background:none;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
+/* NAV — 6 tabs, scrollable, large tap targets */
+nav{display:flex;background:rgba(14,14,18,.97);border-top:1px solid var(--border);padding:4px 0;padding-bottom:calc(6px + var(--safe-bottom));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+.nb{flex:0 0 80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;color:var(--muted);font-size:9px;background:none;border:none;font-family:'Outfit',sans-serif;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:48px}
 .nb.on{color:var(--accent)}
 .nb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:all .2s}
 
@@ -450,22 +451,22 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
 <!-- ===== BOTTOM NAV ===== -->
 <nav>
-  <button class="nb on" onclick="goPage('home',this)">
+  <button class="nb on" onclick="goPage('home',this)" data-page="home">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
   </button>
-  <button class="nb" onclick="goPage('workout',this)" id="nav-workout">
+  <button class="nb" onclick="goPage('workout',this)" id="nav-workout" data-page="workout">
     <svg viewBox="0 0 24 24"><line x1="6" y1="12" x2="18" y2="12"/><line x1="3" y1="6" x2="6" y2="6"/><line x1="18" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="6" y2="18"/><line x1="18" y1="18" x2="21" y2="18"/><line x1="6" y1="6" x2="6" y2="18"/><line x1="18" y1="6" x2="18" y2="18"/></svg>Séance
   </button>
-  <button class="nb" onclick="goPage('run',this)">
+  <button class="nb" onclick="goPage('run',this)" data-page="run">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.5"/><path d="M9 20l1.5-6 2 2.5 2-5 1.5 4"/><path d="M6.5 13.5s1.5-1.5 3-1.5 2.5 2 4.5 2 3.5-1.5 3.5-1.5"/></svg>Course
   </button>
-  <button class="nb" onclick="goPage('analytics',this)">
+  <button class="nb" onclick="goPage('analytics',this)" data-page="analytics">
     <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Stats
   </button>
-  <button class="nb" onclick="goPage('coach',this)">
+  <button class="nb" onclick="goPage('coach',this)" data-page="coach">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Coach
   </button>
-  <button class="nb" onclick="goPage('params',this)">
+  <button class="nb" onclick="goPage('params',this)" data-page="params">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Params
   </button>
 </nav>
@@ -584,8 +585,12 @@ let editWkId=null, editExId=null, tempDays=[], tempExIds=[];
 function goPage(name, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
-  document.getElementById('p-'+name).classList.add('active');
-  if(btn) btn.classList.add('on');
+  const pg=document.getElementById('p-'+name);
+  if(pg) pg.classList.add('active');
+  // Activate correct nav btn by data-page attr
+  const navBtn=document.querySelector('.nb[data-page="'+name+'"]');
+  if(navBtn) navBtn.classList.add('on');
+  else if(btn) btn.classList.add('on');
   if(name==='home') renderHome();
   if(name==='analytics') renderAnalytics();
   if(name==='params') renderParams();
@@ -634,7 +639,7 @@ function renderHome(){
   if(todaySes){
     tc.innerHTML=`<div class="wod"><div class="wod-tag">✅ Séance du jour — Terminée</div><div class="wod-name">${todaySes.name}</div><div class="wod-meta">${Math.round((todaySes.duration||0)/60)} min · ${todaySes.totalVol||0} kg soulevés · Feeling ${['😴','😐','😊','💪','🔥'][(todaySes.feeling||3)-1]}</div></div>`;
   } else if(AS.active){
-    tc.innerHTML=`<div class="wod"><div class="wod-tag">⚡ Séance en cours</div><div class="wod-name">${AS.wk.name}</div><div class="wod-meta">Reprendre</div><button class="btn-primary" onclick="goPage('workout',document.querySelectorAll('.nb')[1])">Reprendre la séance</button></div>`;
+    tc.innerHTML=`<div class="wod"><div class="wod-tag">⚡ Séance en cours</div><div class="wod-name">${AS.wk.name}</div><div class="wod-meta">Reprendre</div><button class="btn-primary" onclick="goPage('workout',document.querySelector('.nb[data-page="workout"]'))">Reprendre la séance</button></div>`;
   } else if(todayWk){
     tc.innerHTML=`<div class="wod"><div class="wod-tag">Aujourd'hui</div><div class="wod-name">${todayWk.name}</div><div class="wod-meta">${todayWk.exIds.length} exercices</div><button class="btn-primary" onclick="startWorkout('${todayWk.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="stroke:none"><polygon points="5 3 19 12 5 21 5 3"/></svg>Démarrer</button></div>`;
   } else {
@@ -701,7 +706,7 @@ function startWorkout(wkId){
     const ex=ST.exercises.find(e=>e.id===eid);
     if(ex) AS.sets[eid]=Array.from({length:ex.sets||4},()=>({kg:'',reps:ex.reps||10,done:false}));
   });
-  goPage('workout',document.querySelectorAll('.nb')[1]);
+  goPage('workout',document.querySelector('.nb[data-page="workout"]'));
   startGlobalTimer();
   requestWakeLock();
 }
@@ -962,7 +967,7 @@ function finishWorkout(){
   AS.active=false;
   releaseWakeLock();
   showToast('Séance enregistrée ! 💪','success');
-  goPage('home',document.querySelectorAll('.nb')[0]);
+  goPage('home',document.querySelector('.nb[data-page="home"]'));
   // Trigger AI analysis if key configured
   if(ST.geminiKey) analyzeWorkoutWithAI(session);
 }
@@ -1618,7 +1623,7 @@ function renderCoach(){
       <div style="font-size:36px;margin-bottom:10px">🤖</div>
       <div style="font-weight:500;margin-bottom:8px">Coach IA non configuré</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Ajoute ta clé Gemini gratuite dans Paramètres pour activer le coach.</div>
-      <button class="btn-ghost btn-block" onclick="goPage('params',document.querySelectorAll('.nb')[5])">Aller dans Paramètres</button>
+      <button class="btn-ghost btn-block" onclick="goPage('params',document.querySelector('.nb[data-page="params"]'))">Aller dans Paramètres</button>
     </div>`;
     return;
   }
