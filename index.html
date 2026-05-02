@@ -317,9 +317,18 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <div class="chart-sub">Feeling moyen par séance</div>
     <svg id="feel-svg" viewBox="0 0 340 70" preserveAspectRatio="none" style="width:100%;height:90px;margin-bottom:8px"></svg>
   </div>
-  <div class="section"><div class="section-label">Conseil personnalisé</div></div>
-  <div class="card" style="border-color:rgba(200,240,74,.35)">
-    <div style="font-size:12px;color:var(--accent);font-weight:500;margin-bottom:8px">🤖 Analyse de tes données</div>
+  <div class="section"><div class="section-label">Bilan IA de la semaine</div></div>
+  <div class="card" style="border-color:rgba(200,240,74,.25);padding:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:12px;color:var(--accent);font-weight:600;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:.3px">🤖 Gemini Coach</div>
+      <button class="pill-ghost" id="btn-weekly-report" onclick="generateWeeklyReport()" style="font-size:11px;padding:4px 10px">Générer</button>
+    </div>
+    <div id="weekly-report-text" style="font-size:13px;line-height:1.7;color:var(--muted)">Clique sur "Générer" pour obtenir ton bilan IA de la semaine (clé Gemini requise).</div>
+  </div>
+
+  <div class="section"><div class="section-label">Analyse automatique</div></div>
+  <div class="card" style="border-color:rgba(200,240,74,.15)">
+    <div style="font-size:12px;color:var(--muted);font-weight:500;margin-bottom:8px">📊 Statistiques calculées</div>
     <div id="ai-advice-text" style="font-size:13px;line-height:1.7;color:var(--muted)">Lance ta première séance pour obtenir des conseils personnalisés !</div>
   </div>
 </div>
@@ -327,6 +336,35 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 <!-- ===== PARAMS ===== -->
 <div class="page" id="p-params">
   <div class="ph"><div><div class="ph-title">Paramètres</div><div class="ph-sub">Configure ton app</div></div></div>
+
+  <div class="section"><div class="section-label">Mon profil</div></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="param-row">
+      <div><div class="param-label">Âge</div></div>
+      <input type="number" id="prof-age" placeholder="25" min="10" max="99" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r8);padding:6px 10px;color:var(--text);font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;width:80px;text-align:center" onchange="saveProfile()"/>
+    </div>
+    <div class="param-row">
+      <div><div class="param-label">Taille</div></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" id="prof-height" placeholder="175" min="100" max="230" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r8);padding:6px 10px;color:var(--text);font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;width:80px;text-align:center" onchange="saveProfile()"/>
+        <span style="font-size:12px;color:var(--muted)">cm</span>
+      </div>
+    </div>
+    <div class="param-row">
+      <div><div class="param-label">Poids</div></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" id="prof-weight" placeholder="75" min="30" max="250" step="0.5" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r8);padding:6px 10px;color:var(--text);font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;width:80px;text-align:center" onchange="saveProfile()"/>
+        <span style="font-size:12px;color:var(--muted)">kg</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><div class="section-label">Clé API Gemini</div></div>
+  <div class="card" style="padding:16px">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">Gratuit sur <span style="color:var(--accent)">aistudio.google.com</span> → Get API Key. Active le coach IA, les analyses de séances et le bilan hebdo.</div>
+    <input type="password" id="gemini-key" placeholder="AIza..." style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r8);padding:10px 12px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;margin-bottom:10px" onchange="saveGeminiKey()"/>
+    <div id="gemini-status" style="font-size:12px;color:var(--muted)">Clé non configurée</div>
+  </div>
 
   <div class="section"><div class="section-label">Mes entraînements</div></div>
   <div class="card" style="padding:0;overflow:hidden">
@@ -376,6 +414,38 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
   <div style="height:20px"></div>
 </div>
 
+
+<!-- ===== COACH IA ===== -->
+<div class="page" id="p-coach">
+  <div class="ph">
+    <div><div class="ph-title">Coach IA</div><div class="ph-sub">Propulsé par Gemini</div></div>
+    <button class="pill-ghost" onclick="clearChat()">Effacer</button>
+  </div>
+  <div id="chat-messages" style="padding:0 14px;display:flex;flex-direction:column;gap:10px;min-height:200px"></div>
+  <div style="height:100px"></div>
+  <div style="position:sticky;bottom:72px;padding:10px 14px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:8px;z-index:40">
+    <input type="text" id="chat-input" placeholder="Pose une question à ton coach..." style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r12);padding:10px 14px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="btn-primary" style="padding:10px 16px;border-radius:var(--r12)" onclick="sendChat()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- MODAL: Post-workout AI analysis -->
+<div class="modal-overlay" id="modal-ai-analysis">
+  <div class="modal">
+    <div class="modal-title">
+      <span>🤖 Analyse de ta séance</span>
+      <button class="modal-close" onclick="closeModal('modal-ai-analysis')">✕</button>
+    </div>
+    <div id="ai-analysis-content" style="font-size:13px;line-height:1.8;color:var(--text)">
+      <div style="text-align:center;padding:24px;color:var(--muted)">Analyse en cours...</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary btn-block" onclick="closeModal('modal-ai-analysis')">Parfait, merci !</button>
+    </div>
+  </div>
+</div>
 </div><!-- /app -->
 
 <!-- ===== BOTTOM NAV ===== -->
@@ -391,6 +461,9 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
   </button>
   <button class="nb" onclick="goPage('analytics',this)">
     <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Stats
+  </button>
+  <button class="nb" onclick="goPage('coach',this)">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Coach
   </button>
   <button class="nb" onclick="goPage('params',this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Params
@@ -498,7 +571,9 @@ let ST={
   exercises: load('ft_exercises', DEFAULT_EXERCISES),
   sessions: load('ft_sessions', []),
   runs: load('ft_runs', []),
-  settings: load('ft_settings', {notif:false, notifTime:'08:00', restTime:60})
+  settings: load('ft_settings', {notif:false, notifTime:'08:00', restTime:60}),
+  profile: load('ft_profile', {age:'',height:'',weight:''}),
+  geminiKey: load('ft_gemini_key','')
 };
 
 // ===================== ACTIVE SESSION =====================
@@ -515,6 +590,7 @@ function goPage(name, btn){
   if(name==='analytics') renderAnalytics();
   if(name==='params') renderParams();
   if(name==='run') renderRun();
+  if(name==='coach') renderCoach();
   if(name==='workout') renderWorkoutPage();
 }
 
@@ -887,6 +963,8 @@ function finishWorkout(){
   releaseWakeLock();
   showToast('Séance enregistrée ! 💪','success');
   goPage('home',document.querySelectorAll('.nb')[0]);
+  // Trigger AI analysis if key configured
+  if(ST.geminiKey) analyzeWorkoutWithAI(session);
 }
 
 function getBestPR(eid){
@@ -1212,6 +1290,21 @@ function renderAnalytics(){
 
 // ===================== PARAMS =====================
 function renderParams(){
+  // Populate profile
+  if(ST.profile){
+    if(ST.profile.age) document.getElementById('prof-age').value=ST.profile.age;
+    if(ST.profile.height) document.getElementById('prof-height').value=ST.profile.height;
+    if(ST.profile.weight) document.getElementById('prof-weight').value=ST.profile.weight;
+  }
+  // Gemini key status
+  const gk=document.getElementById('gemini-key');
+  const gs=document.getElementById('gemini-status');
+  if(gk&&ST.geminiKey){gk.value=ST.geminiKey;}
+  if(gs){
+    if(ST.geminiKey){gs.textContent='✅ Clé configurée — Coach IA actif';gs.style.color='var(--green)';}
+    else{gs.textContent='Clé non configurée';gs.style.color='var(--muted)';}
+  }
+
   document.getElementById('workout-list-params').innerHTML=ST.workouts.map(w=>`
     <div class="param-row">
       <div style="flex:1;min-width:0">
@@ -1358,7 +1451,245 @@ function deleteEx(id){
   showToast('Exercice supprimé','info');
 }
 
-// SETTINGS
+// ===================== PROFILE =====================
+function saveProfile(){
+  ST.profile={
+    age:document.getElementById('prof-age').value,
+    height:document.getElementById('prof-height').value,
+    weight:document.getElementById('prof-weight').value
+  };
+  save('ft_profile',ST.profile);
+  showToast('Profil enregistré !','success');
+}
+
+function saveGeminiKey(){
+  const key=document.getElementById('gemini-key').value.trim();
+  ST.geminiKey=key;
+  save('ft_gemini_key',key);
+  const st=document.getElementById('gemini-status');
+  if(key){st.textContent='✅ Clé configurée — Coach IA actif';st.style.color='var(--green)';}
+  else{st.textContent='Clé non configurée';st.style.color='var(--muted)';}
+}
+
+function buildUserContext(){
+  const p=ST.profile;
+  const profileStr=p.age||p.weight||p.height
+    ? `Profil : ${p.age?p.age+' ans':''}${p.height?' • '+p.height+'cm':''}${p.weight?' • '+p.weight+'kg':''}.`
+    : 'Profil non renseigné.';
+  const imc=p.weight&&p.height?(' IMC: '+(p.weight/((p.height/100)**2)).toFixed(1)+'.') :'';
+  const wkCount=ST.sessions.filter(s=>s.type==='workout').length;
+  const kmTotal=ST.runs.reduce((a,r)=>a+(r.dist||0),0);
+  const avgFeel=ST.sessions.filter(s=>s.feeling).length
+    ? (ST.sessions.filter(s=>s.feeling).reduce((a,s)=>a+s.feeling,0)/ST.sessions.filter(s=>s.feeling).length).toFixed(1) : 'N/A';
+  return `${profileStr}${imc} ${wkCount} séances muscu enregistrées. ${kmTotal.toFixed(1)}km de course. Feeling moyen: ${avgFeel}/5.`;
+}
+
+// ===================== GEMINI API =====================
+async function callGemini(prompt){
+  if(!ST.geminiKey) return null;
+  try{
+    const res=await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${ST.geminiKey}`,
+      {method:'POST',headers:{'Content-Type':'application/json'},
+       body:JSON.stringify({contents:[{parts:[{text:prompt}]}],
+         generationConfig:{temperature:0.7,maxOutputTokens:600}})}
+    );
+    const data=await res.json();
+    if(data.error) return '❌ Erreur API: '+data.error.message;
+    return data.candidates?.[0]?.content?.parts?.[0]?.text||null;
+  }catch(e){return '❌ Erreur réseau: '+e.message;}
+}
+
+// ===================== POST-WORKOUT AI ANALYSIS =====================
+async function analyzeWorkoutWithAI(session){
+  openModal('modal-ai-analysis');
+  document.getElementById('ai-analysis-content').innerHTML=
+    '<div style="text-align:center;padding:24px"><div style="font-size:28px;margin-bottom:12px">🤖</div><div style="color:var(--muted);font-size:13px">Gemini analyse ta séance...</div></div>';
+
+  // Build session summary
+  const exDetails=Object.entries(session.sets).map(([eid,sets])=>{
+    const ex=ST.exercises.find(e=>e.id===eid);
+    if(!ex) return '';
+    const done=sets.filter(s=>s.done&&s.kg&&s.reps);
+    if(!done.length) return '';
+    const maxKg=Math.max(...done.map(s=>parseFloat(s.kg)||0));
+    const totalReps=done.reduce((a,s)=>a+(parseInt(s.reps)||0),0);
+    // Compare to last session
+    const hist=getExerciseHistory(eid);
+    const prev=hist.length>=2?hist[hist.length-2]:null;
+    const prevStr=prev?` (précédent: ${prev.maxKg}kg)`:'';
+    return `${ex.name}: ${done.length} séries, max ${maxKg}kg×${done[0].reps} reps${prevStr}`;
+  }).filter(Boolean).join('\n');
+
+  const feelEmojis=['','😴 Très fatigué','😐 Moyen','😊 Bien','💪 Très bien','🔥 Excellent'];
+  const dur=Math.round(session.duration/60);
+  const prompt=`Tu es un coach sportif expert en musculation. Analyse cette séance de façon concise, bienveillante et très concrète.
+
+${buildUserContext()}
+
+SÉANCE: ${session.name}
+Durée: ${dur} min | Volume total: ${session.totalVol}kg | Feeling: ${feelEmojis[session.feeling]||'N/A'}
+
+EXERCICES:
+${exDetails}
+
+Donne une analyse en 4 parties courtes (2-3 phrases chacune max) avec des emojis:
+1. 💪 Ce qui s'est bien passé
+2. 📈 Points de progression identifiés  
+3. 🎯 Objectifs précis pour la prochaine séance (poids exacts suggérés)
+4. 🔋 Conseil récupération/nutrition
+
+Réponds directement sans introduction. Sois précis avec les chiffres.`;
+
+  const result=await callGemini(prompt);
+  if(!result){
+    document.getElementById('ai-analysis-content').innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Configure ta clé Gemini dans Paramètres pour activer l'analyse IA.</div>';
+    return;
+  }
+  // Format markdown-like to HTML
+  const html=result
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/
+
+/g,'</p><p style="margin-top:12px">')
+    .replace(/
+/g,'<br>');
+  document.getElementById('ai-analysis-content').innerHTML=`<p>${html}</p>`;
+}
+
+// ===================== WEEKLY AI REPORT =====================
+async function generateWeeklyReport(){
+  const btn=document.getElementById('btn-weekly-report');
+  if(btn){btn.textContent='Génération...';btn.disabled=true;}
+
+  const now=new Date();
+  const dow=now.getDay()===0?6:now.getDay()-1;
+  const weekStart=new Date(now);weekStart.setDate(now.getDate()-dow);weekStart.setHours(0,0,0,0);
+  const weekSes=ST.sessions.filter(s=>new Date(s.date)>=weekStart&&s.type==='workout');
+  const weekRuns=ST.runs.filter(r=>new Date(r.date)>=weekStart);
+  const vol=weekSes.reduce((a,s)=>a+(s.totalVol||0),0);
+  const muscleVol=getWeeklyVolumeByMuscle();
+  const muscleStr=Object.entries(muscleVol).map(([m,d])=>`${m}: ${d.sets} séries`).join(', ')||'Aucune séance cette semaine';
+
+  const prompt=`Tu es un coach sportif expert. Génère un bilan hebdomadaire concis et motivant.
+
+${buildUserContext()}
+
+SEMAINE EN COURS:
+- Séances muscu: ${weekSes.length} (${weekSes.map(s=>s.name).join(', ')||'aucune'})
+- Volume total: ${vol}kg
+- Volume par muscle: ${muscleStr}
+- Courses: ${weekRuns.length} pour ${weekRuns.reduce((a,r)=>a+(r.dist||0),0).toFixed(1)}km
+- Feeling moyen: ${weekSes.filter(s=>s.feeling).length?( weekSes.filter(s=>s.feeling).reduce((a,s)=>a+s.feeling,0)/weekSes.filter(s=>s.feeling).length).toFixed(1):'N/A'}/5
+
+Bilan en 3 parties courtes:
+1. 📊 Bilan de la semaine (ce qui a été fait)
+2. ⚠️ Points d'attention (muscles négligés, fatigue, déséquilibres)
+3. 🗓️ Plan semaine prochaine (recommandations concrètes avec jours et charges)
+
+2-3 phrases max par partie. Sois direct et précis.`;
+
+  const result=await callGemini(prompt);
+  const el=document.getElementById('weekly-report-text');
+  if(el){
+    if(result){
+      const html=result.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/
+
+/g,'</p><p style="margin-top:10px">').replace(/
+/g,'<br>');
+      el.innerHTML=`<p>${html}</p>`;
+      el.style.color='var(--text)';
+    } else {
+      el.textContent='Configure ta clé Gemini dans Paramètres.';
+    }
+  }
+  if(btn){btn.textContent='Actualiser le bilan';btn.disabled=false;}
+}
+
+// ===================== COACH CHAT =====================
+let chatHistory=[];
+
+function renderCoach(){
+  const apiKey=ST.geminiKey;
+  const msgs=document.getElementById('chat-messages');
+  if(!msgs) return;
+  if(!apiKey&&!chatHistory.length){
+    msgs.innerHTML=`<div class="card" style="text-align:center;padding:24px">
+      <div style="font-size:36px;margin-bottom:10px">🤖</div>
+      <div style="font-weight:500;margin-bottom:8px">Coach IA non configuré</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Ajoute ta clé Gemini gratuite dans Paramètres pour activer le coach.</div>
+      <button class="btn-ghost btn-block" onclick="goPage('params',document.querySelectorAll('.nb')[5])">Aller dans Paramètres</button>
+    </div>`;
+    return;
+  }
+  if(!chatHistory.length){
+    addChatMessage('ai','Bonjour ! 👋 Je suis ton coach IA. J\'ai accès à tout ton historique d\'entraînement. Pose-moi n\'importe quelle question sur ta progression, tes charges, ta récupération ou ton programme !');
+  }
+  renderChatMessages();
+}
+
+function renderChatMessages(){
+  const msgs=document.getElementById('chat-messages');
+  if(!msgs) return;
+  msgs.innerHTML=chatHistory.map(m=>{
+    if(m.role==='user') return `<div style="display:flex;justify-content:flex-end"><div style="background:var(--accent);color:#0A0A0C;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:80%;font-size:13px;font-weight:500">${m.text}</div></div>`;
+    if(m.role==='loading') return `<div style="display:flex;gap:8px;align-items:flex-end"><div style="width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,240,74,.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🤖</div><div style="background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:13px;color:var(--muted)">Analyse en cours...</div></div>`;
+    const html=m.text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/
+/g,'<br>');
+    return `<div style="display:flex;gap:8px;align-items:flex-end"><div style="width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,240,74,.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🤖</div><div style="background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:10px 14px;max-width:82%;font-size:13px;line-height:1.6">${html}</div></div>`;
+  }).join('');
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addChatMessage(role,text){
+  chatHistory.push({role,text});
+  renderChatMessages();
+}
+
+async function sendChat(){
+  const inp=document.getElementById('chat-input');
+  const text=inp.value.trim();
+  if(!text) return;
+  if(!ST.geminiKey){showToast('Configure ta clé Gemini dans Paramètres','info');return;}
+  inp.value='';
+  addChatMessage('user',text);
+  addChatMessage('loading','...');
+
+  // Build full context prompt
+  const recentSes=ST.sessions.slice(-5).map(s=>{
+    const exStr=s.sets?Object.entries(s.sets).map(([eid,sets])=>{
+      const ex=ST.exercises.find(e=>e.id===eid);
+      const done=sets.filter(x=>x.done&&x.kg&&x.reps);
+      if(!done.length||!ex) return '';
+      return `${ex.name}: max ${Math.max(...done.map(x=>parseFloat(x.kg)||0))}kg`;
+    }).filter(Boolean).join(', '):'';
+    return `${new Date(s.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}: ${s.name} (${Math.round((s.duration||0)/60)}min, ${s.totalVol||0}kg) — ${exStr}`;
+  }).join('\n');
+
+  const prStr=ST.exercises.map(ex=>{const pr=getBestPR(ex.id);return pr?`${ex.name}: ${pr.kg}kg×${pr.reps}`:null;}).filter(Boolean).join(', ');
+
+  const systemPrompt=`Tu es un coach sportif expert, bienveillant et précis. Réponds en français, de façon concise (max 150 mots sauf si demande détaillée). Utilise des emojis avec modération.
+
+${buildUserContext()}
+
+PROGRAMME:
+${ST.workouts.map(w=>`${w.name}: ${w.exIds.map(id=>ST.exercises.find(e=>e.id===id)?.name).filter(Boolean).join(', ')}`).join('\n')}
+
+DERNIÈRES SÉANCES:
+${recentSes||'Aucune séance encore.'}
+
+RECORDS PERSONNELS: ${prStr||'Aucun encore.'}
+
+Question de l'utilisateur: ${text}`;
+
+  const result=await callGemini(systemPrompt);
+  chatHistory.pop(); // remove loading
+  addChatMessage('ai',result||'Désolé, je n\'ai pas pu répondre. Vérifie ta connexion ou ta clé API.');
+}
+
+function clearChat(){chatHistory=[];renderCoach();}
+
+// ===================== SETTINGS =====================
 function toggleNotif(){
   ST.settings.notif=!ST.settings.notif;
   save('ft_settings',ST.settings);
