@@ -433,7 +433,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </div>
 
 <!-- MODAL: Post-workout AI analysis -->
-<div class="modal-overlay" id="modal-ai-analysis">
+<div class="modal-overlay" id="modal-ai-analysis" style="display:none">
   <div class="modal">
     <div class="modal-title">
       <span>🤖 Analyse de ta séance</span>
@@ -475,7 +475,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 <div class="toast" id="toast"></div>
 
 <!-- MODAL: Exercise history -->
-<div class="modal-overlay" id="modal-ex-history">
+<div class="modal-overlay" id="modal-ex-history" style="display:none">
   <div class="modal">
     <div class="modal-title"><span id="exh-title">Progression</span><button class="modal-close" onclick="closeModal('modal-ex-history')">✕</button></div>
     <div id="exh-content"></div>
@@ -483,7 +483,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </div>
 
 <!-- MODAL: Add/Edit Workout -->
-<div class="modal-overlay" id="modal-workout">
+<div class="modal-overlay" id="modal-workout" style="display:none">
   <div class="modal">
     <div class="modal-title"><span id="mw-title">Nouvel entraînement</span><button class="modal-close" onclick="closeModal('modal-workout')">✕</button></div>
     <div class="field"><label>Nom de la séance</label><input type="text" id="mw-name" placeholder="Ex: Push — Pecs / Épaules / Triceps"/></div>
@@ -503,7 +503,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </div>
 
 <!-- MODAL: Add/Edit Exercise -->
-<div class="modal-overlay" id="modal-ex">
+<div class="modal-overlay" id="modal-ex" style="display:none">
   <div class="modal">
     <div class="modal-title"><span id="me-title">Nouvel exercice</span><button class="modal-close" onclick="closeModal('modal-ex')">✕</button></div>
     <div class="field"><label>Nom de l'exercice</label><input type="text" id="me-name" placeholder="Ex: Développé couché"/></div>
@@ -523,7 +523,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </div>
 
 <!-- MODAL: Add Run -->
-<div class="modal-overlay" id="modal-run">
+<div class="modal-overlay" id="modal-run" style="display:none">
   <div class="modal">
     <div class="modal-title"><span>Ajouter une course</span><button class="modal-close" onclick="closeModal('modal-run')">✕</button></div>
     <div class="field"><label>Date</label><input type="date" id="run-date"/></div>
@@ -1723,10 +1723,20 @@ function resetHistory(){
 }
 
 // MODAL HELPERS
-function openModal(id){document.getElementById(id).classList.add('show');}
-function closeModal(id){document.getElementById(id).classList.remove('show');}
+function openModal(id){
+  const el=document.getElementById(id);
+  el.style.display='flex';
+  el.classList.add('show');
+}
+function closeModal(id){
+  const el=document.getElementById(id);
+  el.style.display='none';
+  el.classList.remove('show');
+}
 document.querySelectorAll('.modal-overlay').forEach(m=>{
-  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');});
+  m.addEventListener('click',e=>{
+    if(e.target===m){m.style.display='none';m.classList.remove('show');}
+  });
 });
 
 // ===================== SERVICE WORKER =====================
