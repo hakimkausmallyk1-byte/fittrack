@@ -1,4 +1,4 @@
-const CACHE_VERSION = '%%CACHE_VERSION%%';
+const CACHE_VERSION = '20260502200759';
 const CACHE_NAME = 'fittrack-' + CACHE_VERSION;
 
 // On n'inclut PAS index.html dans les assets cachés
