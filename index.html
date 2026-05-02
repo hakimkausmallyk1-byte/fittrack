@@ -193,6 +193,9 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 </style>
 </head>
 <body>
+<div id="sw-reset-banner" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#FF4D4D;color:white;text-align:center;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:none" onclick="resetSW()">
+  ⚠️ Appuie ici pour vider le cache et recharger l'app
+</div>
 <div id="app">
 
 <!-- ===== HOME ===== -->
@@ -1745,6 +1748,34 @@ if('serviceWorker' in navigator){
 }
 
 // ===================== INIT =====================
+
+// ===================== SW RESET =====================
+async function resetSW(){
+  document.getElementById('sw-reset-banner').textContent='Nettoyage en cours...';
+  try{
+    // Unregister all service workers
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      for(const reg of regs) await reg.unregister();
+    }
+    // Clear all caches
+    const keys=await caches.keys();
+    for(const key of keys) await caches.delete(key);
+    // Hard reload
+    window.location.reload(true);
+  }catch(e){
+    window.location.reload(true);
+  }
+}
+
+// Show banner automatically so user can tap it
+document.getElementById('sw-reset-banner').style.display='block';
+// Auto-hide after 10 seconds if user ignores it
+setTimeout(()=>{
+  const b=document.getElementById('sw-reset-banner');
+  if(b) b.style.display='none';
+},10000);
+
 renderHome();
 </script>
 </body>
