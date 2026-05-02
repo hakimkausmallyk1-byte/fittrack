@@ -1,5 +1,5 @@
 // Version injected by GitHub Actions — do not edit manually
-const CACHE_VERSION = '%%CACHE_VERSION%%';
+const CACHE_VERSION = '20260502195012';
 const CACHE_NAME = 'fittrack-' + CACHE_VERSION;
 const ASSETS = [
   '/fittrack/',
