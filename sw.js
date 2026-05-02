@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fittrack-%%CACHE_VERSION%%';
+const CACHE_NAME = 'fittrack-20260502193500';
 const ASSETS = [
   '/fittrack/',
   '/fittrack/index.html',
