@@ -11,112 +11,120 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>FitTrack</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0E0E10;--surface:#18181C;--card:#222228;--border:#2E2E36;
-  --accent:#C8F04A;--accent-dim:rgba(200,240,74,.12);
-  --pink:#F04A8A;--cyan:#4AF0C8;--amber:#F0B44A;
-  --text:#F0EFE8;--muted:#888;--muted2:#444;
-  --green:#4AF08A;--red:#F04A4A;
+  --bg:#0A0A0C;--surface:#141418;--card:#1C1C22;--border:#28282F;
+  --accent:#C8F04A;--accent-dim:rgba(200,240,74,.1);
+  --pink:#FF4D8D;--cyan:#00E5C8;--amber:#FFB347;--purple:#A78BFA;
+  --text:#F2F0E8;--muted:#6B6B78;--muted2:#2A2A30;
+  --green:#3DDD85;--red:#FF4D4D;
   --r8:8px;--r12:12px;--r16:16px;--r20:20px;
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
-body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.5}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.5}
 #app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto}
 .page{display:none;flex:1;overflow-y:auto;padding-bottom:calc(72px + var(--safe-bottom))}
 .page.active{display:block}
 
 /* NAV */
-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);padding:6px 0;padding-bottom:calc(8px + var(--safe-bottom));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;color:var(--muted);font-size:10px;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .2s}
+nav{display:flex;background:rgba(14,14,18,.97);border-top:1px solid var(--border);padding:6px 0;padding-bottom:calc(8px + var(--safe-bottom));position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;color:var(--muted);font-size:10px;background:none;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
 .nb.on{color:var(--accent)}
-.nb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:all .2s}
 
 /* HEADER */
-.ph{padding:56px 18px 16px;display:flex;justify-content:space-between;align-items:flex-end}
-.ph-title{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;line-height:1}
+.ph{padding:52px 18px 14px;display:flex;justify-content:space-between;align-items:flex-end}
+.ph-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:32px;line-height:1;letter-spacing:-.5px}
 .ph-sub{font-size:12px;color:var(--muted);margin-top:3px}
-.pill{background:var(--accent);color:#0E0E10;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:5px 12px;border-radius:20px;cursor:pointer;border:none}
-.pill-ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);font-size:11px;font-family:'Syne',sans-serif;font-weight:700;padding:5px 12px;border-radius:20px;cursor:pointer}
+.pill{background:var(--accent);color:#0A0A0C;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.3px;padding:6px 14px;border-radius:20px;cursor:pointer;border:none}
+.pill-ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer}
 
 /* CARDS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r16);padding:16px;margin:0 14px 12px}
 .section{padding:4px 14px 8px}
-.section-label{font-size:11px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;font-weight:500}
+.section-label{font-size:10px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
 
 /* TODAY CARD */
-.wod{background:var(--card);border:2px solid var(--accent);border-radius:var(--r20);padding:20px;margin:0 14px 14px;position:relative;overflow:hidden}
-.wod::after{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:var(--accent);opacity:.05;border-radius:50%}
-.wod-tag{font-size:10px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;font-weight:500;margin-bottom:6px}
-.wod-name{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:4px}
-.wod-meta{font-size:12px;color:var(--muted);margin-bottom:16px}
+.wod{border-radius:var(--r20);padding:22px;margin:0 14px 14px;position:relative;overflow:hidden;background:linear-gradient(135deg,#141A08 0%,#1C220A 60%,#0E1A10 100%);border:1.5px solid rgba(200,240,74,.4)}
+.wod::before{content:'';position:absolute;top:-20px;right:-20px;width:130px;height:130px;background:radial-gradient(circle,rgba(200,240,74,.1) 0%,transparent 70%);pointer-events:none}
+.wod-tag{font-size:10px;color:var(--accent);letter-spacing:1.8px;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.wod-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.3px;margin-bottom:4px}
+.wod-meta{font-size:12px;color:var(--muted);margin-bottom:18px}
 
 /* BUTTONS */
-.btn-primary{background:var(--accent);color:#0E0E10;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:11px 20px;border-radius:var(--r12);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .15s}
+.btn-primary{background:var(--accent);color:#0A0A0C;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.3px;padding:11px 22px;border-radius:var(--r12);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .15s}
 .btn-primary:active{transform:scale(.97)}
-.btn-ghost{background:var(--card);color:var(--text);font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--r12);border:1px solid var(--border);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;font-family:'DM Sans',sans-serif}
+.btn-ghost{background:rgba(255,255,255,.04);color:var(--text);font-size:13px;font-weight:500;padding:10px 16px;border-radius:var(--r12);border:1px solid var(--border);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;font-family:'Outfit',sans-serif}
 .btn-ghost:active{transform:scale(.97)}
 .btn-block{width:100%;justify-content:center}
 
-/* STATS GRID */
+/* STATS GRID — colored top stripe per card */
 .sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 14px;margin-bottom:12px}
-.scard{background:var(--card);border:1px solid var(--border);border-radius:var(--r12);padding:14px}
-.scard-label{font-size:11px;color:var(--muted);margin-bottom:6px}
-.scard-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
-.scard-unit{font-size:11px;color:var(--muted);margin-left:3px;font-family:'DM Sans',sans-serif;font-weight:400}
-.scard-delta{font-size:11px;margin-top:4px}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:var(--r12);padding:14px;position:relative;overflow:hidden}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r12) var(--r12) 0 0}
+.scard:nth-child(1)::before{background:var(--accent)}
+.scard:nth-child(2)::before{background:var(--cyan)}
+.scard:nth-child(3)::before{background:var(--pink)}
+.scard:nth-child(4)::before{background:var(--purple)}
+.scard-label{font-size:11px;color:var(--muted);margin-bottom:8px;margin-top:4px;font-weight:500}
+.scard-val{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;line-height:1;letter-spacing:-.5px}
+.scard-unit{font-size:13px;color:var(--muted);margin-left:2px;font-family:'Outfit',sans-serif;font-weight:400}
+.scard-delta{font-size:11px;margin-top:5px}
 .up{color:var(--green)}.down{color:var(--red)}.neu{color:var(--muted)}
 
 /* WEEK */
 .week{display:flex;gap:6px;padding:0 14px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
 .week::-webkit-scrollbar{display:none}
 .day{flex:1;min-width:40px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:var(--r12);border:1px solid var(--border);cursor:pointer;transition:all .2s;background:var(--surface)}
-.day.today{border-color:var(--accent);background:var(--accent-dim)}
-.day.done{background:rgba(74,240,138,.08);border-color:rgba(74,240,138,.3)}
-.day.rest{opacity:.4}
+.day.today{border-color:var(--accent);background:rgba(200,240,74,.08)}
+.day.done{background:rgba(61,221,133,.07);border-color:rgba(61,221,133,.35)}
+.day.rest{opacity:.35}
 .day-name{font-size:10px;color:var(--muted);font-weight:500}
-.day-num{font-family:'Syne',sans-serif;font-weight:700;font-size:15px}
-.day-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2)}
+.day-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.3px}
+.day-dot{width:5px;height:5px;border-radius:50%;background:var(--muted2)}
 .day.today .day-name,.day.today .day-num{color:var(--accent)}
 .day.done .day-dot{background:var(--green)}
+.day.done .day-num{color:var(--green)}
 
 /* ACTIVE WORKOUT */
-.aw-header{background:var(--surface);padding:56px 18px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
-.aw-timer{font-family:'Syne',sans-serif;font-size:46px;font-weight:800;color:var(--accent);letter-spacing:-2px;line-height:1}
+.aw-header{background:rgba(10,10,12,.95);padding:52px 18px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.aw-timer{font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:700;color:var(--accent);letter-spacing:-1px;line-height:1}
 .aw-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .ex-block{margin:0 14px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--r16);overflow:hidden}
-.ex-block-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-.ex-block-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px}
+.ex-block-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+.ex-block-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.2px}
 .ex-block-pr{font-size:11px;color:var(--amber)}
 .set-row{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border)}
 .set-row:last-child{border-bottom:none}
-.set-num{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--muted);width:18px;flex-shrink:0}
-.set-inp{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r8);padding:8px 10px;color:var(--text);font-size:14px;text-align:center;font-family:'DM Sans',sans-serif;min-width:0}
-.set-inp:focus{outline:none;border-color:var(--accent)}
-.set-ok{width:32px;height:32px;border-radius:var(--r8);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;background:none;color:var(--muted)}
-.set-ok.done{background:var(--accent);border-color:var(--accent);color:#0E0E10}
+.set-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--muted);width:18px;flex-shrink:0}
+.set-inp{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r8);padding:8px 10px;color:var(--text);font-size:17px;font-family:'Barlow Condensed',sans-serif;font-weight:600;text-align:center;min-width:0;letter-spacing:-.3px}
+.set-inp:focus{outline:none;border-color:var(--accent);background:rgba(200,240,74,.05)}
+.set-inp::placeholder{color:var(--muted);font-weight:400;font-family:'Outfit',sans-serif;font-size:13px}
+.set-ok{width:32px;height:32px;border-radius:var(--r8);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;background:none;color:var(--muted)}
+.set-ok.done{background:var(--accent);border-color:var(--accent);color:#0A0A0C}
 .feel-row{display:flex;gap:8px;justify-content:center;padding:14px}
-.feel-btn{font-size:24px;cursor:pointer;padding:8px 12px;border-radius:var(--r12);border:2px solid transparent;transition:all .2s;background:var(--surface)}
+.feel-btn{font-size:24px;cursor:pointer;padding:8px 12px;border-radius:var(--r12);border:2px solid transparent;transition:all .2s;background:rgba(255,255,255,.04)}
 .feel-btn.sel{border-color:var(--accent);background:var(--accent-dim)}
 
-/* REST (inline, not fixed) */
-.rest-wrap{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r20);margin:0 14px 14px;padding:28px 20px;text-align:center}
+/* REST */
+.rest-wrap{display:none;background:var(--surface);border:1px solid rgba(0,229,200,.22);border-radius:var(--r20);margin:0 14px 14px;padding:28px 20px;text-align:center}
 .rest-wrap.show{display:block}
 .rest-circle{width:140px;height:140px;margin:0 auto 12px;position:relative;display:flex;align-items:center;justify-content:center}
 .rest-svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.rest-num{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--accent);position:relative;z-index:1}
+.rest-num{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:700;color:var(--cyan);position:relative;z-index:1;letter-spacing:-1px}
 .rest-lbl{font-size:13px;color:var(--muted);margin-bottom:16px}
+#rest-progress{stroke:#00E5C8}
 
 /* ANALYTICS */
 .chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r16);padding:16px;margin:0 14px 12px}
-.chart-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:3px}
+.chart-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.2px;margin-bottom:3px}
 .chart-sub{font-size:11px;color:var(--muted);margin-bottom:14px}
 .bar-chart{display:flex;align-items:flex-end;gap:6px;height:100px;margin-bottom:20px}
 .bar{flex:1;border-radius:var(--r8) var(--r8) 0 0;position:relative;min-height:4px;cursor:pointer;transition:opacity .2s}
 .bar-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap}
-.bar-val{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:500;white-space:nowrap;color:var(--accent)}
+.bar-val{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap;color:var(--accent);font-family:'Barlow Condensed',sans-serif;letter-spacing:-.3px}
 .line-svg{width:100%;height:80px}
 
 /* PARAMS */
@@ -124,65 +132,60 @@ nav{display:flex;background:var(--surface);border-top:1px solid var(--border);pa
 .param-row:last-child{border-bottom:none}
 .param-label{font-size:14px;font-weight:500}
 .param-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.param-action{font-size:12px;color:var(--accent);font-weight:500;cursor:pointer}
+.param-action{font-size:13px;color:var(--accent);font-weight:600;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px}
 .toggle{width:40px;height:22px;background:var(--muted2);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none}
 .toggle.on{background:var(--accent)}
 .toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:transform .2s}
 .toggle.on::after{transform:translateX(18px)}
 
-/* MODALS (inline faux-overlay) */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(14,14,16,.92);z-index:300;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bottom)}
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,12,.93);z-index:300;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bottom)}
 .modal-overlay.show{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r20) var(--r20) 0 0;padding:24px 20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
-.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
-.modal-close{font-size:20px;cursor:pointer;color:var(--muted);background:none;border:none;color:var(--muted)}
+.modal{background:#17171C;border:1px solid var(--border);border-radius:var(--r20) var(--r20) 0 0;padding:24px 20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.3px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-close{font-size:20px;cursor:pointer;background:none;border:none;color:var(--muted);line-height:1}
 .field{margin-bottom:14px}
-.field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;font-weight:500;letter-spacing:.3px}
-.field input,.field select,.field textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--r8);padding:10px 12px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif}
+.field label{font-size:10px;color:var(--muted);display:block;margin-bottom:6px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r8);padding:10px 12px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
 .field select{appearance:none;-webkit-appearance:none}
-.field select option{background:var(--card);color:var(--text)}
+.field select option{background:#17171C;color:var(--text)}
 .days-sel{display:flex;gap:6px;flex-wrap:wrap}
-.day-tag{padding:6px 12px;border-radius:var(--r8);border:1px solid var(--border);font-size:12px;cursor:pointer;transition:all .2s;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif}
-.day-tag.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.day-tag{padding:6px 12px;border-radius:var(--r8);border:1px solid var(--border);font-size:12px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.04);color:var(--text);font-family:'Outfit',sans-serif}
+.day-tag.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:600}
 .modal-footer{display:flex;gap:10px;margin-top:20px}
 .modal-footer .btn-primary{flex:1;justify-content:center}
 
 /* EXERCISE LIST */
 .ex-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border)}
 .ex-item:last-child{border-bottom:none}
-.ex-icon{width:36px;height:36px;border-radius:var(--r8);background:var(--accent-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-icon{width:36px;height:36px;border-radius:var(--r8);background:var(--accent-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(200,240,74,.15)}
 .ex-icon svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ex-info{flex:1;min-width:0}
 .ex-name{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ex-meta{font-size:11px;color:var(--muted);margin-top:2px}
 .ex-actions{display:flex;gap:8px;flex-shrink:0}
 .icon-btn{width:28px;height:28px;border-radius:var(--r8);border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.icon-btn:hover{color:var(--text);border-color:var(--muted)}
+.icon-btn:hover{color:var(--text);border-color:#555}
 .icon-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* TAGS */
-.tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500}
-.tag-green{background:rgba(74,240,138,.12);color:var(--green)}
-.tag-amber{background:rgba(240,180,74,.12);color:var(--amber)}
-.tag-cyan{background:rgba(74,240,200,.12);color:var(--cyan)}
-.tag-pink{background:rgba(240,74,138,.12);color:var(--pink)}
+.tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px}
+.tag-green{background:rgba(61,221,133,.12);color:var(--green);border:1px solid rgba(61,221,133,.2)}
+.tag-amber{background:rgba(255,179,71,.12);color:var(--amber);border:1px solid rgba(255,179,71,.2)}
+.tag-cyan{background:rgba(0,229,200,.12);color:var(--cyan);border:1px solid rgba(0,229,200,.2)}
+.tag-pink{background:rgba(255,77,141,.12);color:var(--pink);border:1px solid rgba(255,77,141,.2)}
 
 /* RUN */
 .run-hero{text-align:center;padding:20px 20px 14px}
-.run-dist{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:var(--accent);line-height:1}
+.run-dist{font-family:'Barlow Condensed',sans-serif;font-size:64px;font-weight:700;color:var(--cyan);line-height:1;letter-spacing:-2px}
 .run-unit{font-size:14px;color:var(--muted);margin-bottom:4px}
 
 /* TOAST */
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r12);padding:10px 18px;font-size:13px;font-weight:500;z-index:999;transition:transform .3s;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.toast.success{border-color:var(--green);color:var(--green)}
-.toast.info{border-color:var(--accent);color:var(--accent)}
-
-/* SESSION SUMMARY */
-.summary-hero{text-align:center;padding:32px 20px 20px}
-.summary-val{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:var(--accent);line-height:1}
-.summary-label{font-size:14px;color:var(--muted);margin-top:4px}
+.toast.success{border-color:var(--green);color:var(--green);background:rgba(61,221,133,.08)}
+.toast.info{border-color:var(--accent);color:var(--accent);background:rgba(200,240,74,.08)}
 
 ::-webkit-scrollbar{width:0}
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
@@ -295,8 +298,13 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <div class="bar-chart" id="vol-chart"></div>
   </div>
   <div class="chart-wrap">
+    <div class="chart-title">Volume par groupe musculaire</div>
+    <div class="chart-sub">Cette semaine — séries effectuées + alertes</div>
+    <div id="muscle-vol-chart"></div>
+  </div>
+  <div class="chart-wrap">
     <div class="chart-title">Records personnels</div>
-    <div class="chart-sub">Meilleur poids par exercice</div>
+    <div class="chart-sub">Clique sur un exercice pour voir sa progression</div>
     <div id="pr-list"></div>
   </div>
   <div class="chart-wrap">
@@ -391,6 +399,14 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- MODAL: Exercise history -->
+<div class="modal-overlay" id="modal-ex-history">
+  <div class="modal">
+    <div class="modal-title"><span id="exh-title">Progression</span><button class="modal-close" onclick="closeModal('modal-ex-history')">✕</button></div>
+    <div id="exh-content"></div>
+  </div>
+</div>
 
 <!-- MODAL: Add/Edit Workout -->
 <div class="modal-overlay" id="modal-workout">
@@ -634,21 +650,102 @@ function startGlobalTimer(){
   },1000);
 }
 
+// Retourne la dernière séance de cet exercice avec toutes séries complétées
+function getLastSession(eid){
+  const sesWithEx=[...ST.sessions].reverse().find(s=>s.sets&&s.sets[eid]&&s.sets[eid].some(x=>x.done&&x.kg&&x.reps));
+  if(!sesWithEx) return null;
+  return sesWithEx.sets[eid].filter(x=>x.done&&x.kg&&x.reps);
+}
+
+// Suggère le poids pour la prochaine série : +2.5kg si toutes faites la dernière fois
+function getSuggestedKg(eid, setIndex){
+  const last=getLastSession(eid);
+  if(!last||!last[setIndex]) return null;
+  const lastKg=parseFloat(last[setIndex].kg)||0;
+  const lastReps=parseInt(last[setIndex].reps)||0;
+  const ex=ST.exercises.find(e=>e.id===eid);
+  const targetReps=ex?ex.reps:10;
+  // Toutes les séries complétées avec les reps cibles → suggestion +2.5kg
+  const allDone=last.every(s=>parseInt(s.reps)>=targetReps);
+  return allDone ? lastKg+2.5 : lastKg;
+}
+
+// Volume par groupe musculaire cette semaine
+function getWeeklyVolumeByMuscle(){
+  const now=new Date();
+  const dow=now.getDay()===0?6:now.getDay()-1;
+  const ws=new Date(now);ws.setDate(now.getDate()-dow);ws.setHours(0,0,0,0);
+  const weekSes=ST.sessions.filter(s=>new Date(s.date)>=ws&&s.type==='workout');
+  const byMuscle={};
+  weekSes.forEach(s=>{
+    if(!s.sets) return;
+    Object.entries(s.sets).forEach(([eid,sets])=>{
+      const ex=ST.exercises.find(e=>e.id===eid);
+      if(!ex) return;
+      const muscle=ex.muscle;
+      if(!byMuscle[muscle]) byMuscle[muscle]={sets:0,vol:0};
+      sets.filter(x=>x.done).forEach(x=>{
+        byMuscle[muscle].sets++;
+        byMuscle[muscle].vol+=(parseFloat(x.kg)||0)*(parseInt(x.reps)||0);
+      });
+    });
+  });
+  return byMuscle;
+}
+
+function getMuscleAlerts(){
+  const vol=getWeeklyVolumeByMuscle();
+  const alerts=[];
+  // Seuils : >20 séries/semaine = surcharge ; muscles entraînés mais <4 séries = peu
+  const HIGH=20, LOW=4;
+  Object.entries(vol).forEach(([muscle,data])=>{
+    if(data.sets>=HIGH) alerts.push({type:'over',muscle,sets:data.sets});
+    else if(data.sets>0&&data.sets<LOW) alerts.push({type:'low',muscle,sets:data.sets});
+  });
+  // Muscles présents dans les programmes mais pas touchés cette semaine
+  const trainedMuscles=new Set(ST.exercises.map(e=>e.muscle));
+  trainedMuscles.forEach(m=>{if(!vol[m]&&m!=='Full Body') alerts.push({type:'missing',muscle:m,sets:0});});
+  return alerts;
+}
+
 function renderExBlocks(){
   if(!AS.active) return;
   const c=document.getElementById('ex-blocks-container');
   c.innerHTML='';
+
+  // Alertes volume en haut
+  const alerts=getMuscleAlerts().filter(a=>a.type==='over');
+  if(alerts.length){
+    const alertDiv=document.createElement('div');
+    alertDiv.style.cssText='margin:0 14px 12px;padding:10px 14px;background:rgba(240,74,74,.1);border:1px solid rgba(240,74,74,.3);border-radius:var(--r12);font-size:12px;color:var(--red)';
+    alertDiv.innerHTML='⚠️ Surcharge détectée : '+alerts.map(a=>`<b>${a.muscle}</b> (${a.sets} séries cette semaine)`).join(', ');
+    c.appendChild(alertDiv);
+  }
+
   AS.wk.exIds.forEach(eid=>{
     const ex=ST.exercises.find(e=>e.id===eid);
     if(!ex) return;
     const pr=getBestPR(eid);
     const sets=AS.sets[eid]||[];
+    const lastSes=getLastSession(eid);
     const div=document.createElement('div');
     div.className='ex-block';
+
+    // Badge suggestion progressive
+    const allLastDone=lastSes&&lastSes.length>0&&lastSes.every(s=>parseInt(s.reps)>=(ex.reps||10));
+    const progressBadge=allLastDone
+      ?`<span style="font-size:10px;background:rgba(200,240,74,.15);color:var(--accent);border:1px solid rgba(200,240,74,.4);padding:2px 8px;border-radius:20px;margin-left:8px">↑ +2.5kg suggéré</span>`
+      :(lastSes?`<span style="font-size:10px;background:rgba(240,180,74,.1);color:var(--amber);border:1px solid rgba(240,180,74,.3);padding:2px 8px;border-radius:20px;margin-left:8px">= Maintiens le poids</span>`:'');
+
     div.innerHTML=`
       <div class="ex-block-header">
-        <div class="ex-block-name">${ex.name}</div>
-        ${pr?`<div class="ex-block-pr">PR: ${pr.kg}kg × ${pr.reps}</div>`:'<div class="ex-block-pr">Pas encore de PR</div>'}
+        <div style="flex:1;min-width:0">
+          <div class="ex-block-name">${ex.name}${progressBadge}</div>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            ${pr?`<span class="ex-block-pr">PR: ${pr.kg}kg×${pr.reps}</span>`:'<span class="ex-block-pr">Pas encore de PR</span>'}
+            ${lastSes?`<span style="font-size:11px;color:var(--muted)">Dernière: ${lastSes[0].kg}kg×${lastSes[0].reps}</span>`:''}
+          </div>
+        </div>
       </div>
       <div class="set-row" style="background:var(--surface);padding:7px 14px">
         <div class="set-num"></div>
@@ -656,16 +753,19 @@ function renderExBlocks(){
         <div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">Répétitions</div>
         <div style="width:32px"></div>
       </div>
-      ${sets.map((s,i)=>`
-        <div class="set-row" id="set-${eid}-${i}" style="${s.done?'opacity:.6':''}">
+      ${sets.map((s,i)=>{
+        const suggested=getSuggestedKg(eid,i);
+        const displayVal=s.kg!==''?s.kg:(suggested||'');
+        const placeholder=suggested?`${suggested} kg suggéré`:'kg';
+        return `<div class="set-row" style="${s.done?'opacity:.55':''}">
           <div class="set-num">${i+1}</div>
-          <input class="set-inp" type="number" placeholder="kg" value="${s.kg}" step="0.5" min="0" onchange="updateSet('${eid}',${i},'kg',this.value)"/>
+          <input class="set-inp" type="number" placeholder="${placeholder}" value="${displayVal}" step="0.5" min="0" onchange="updateSet('${eid}',${i},'kg',this.value)" style="${!s.kg&&suggested?'border-color:rgba(200,240,74,.4);color:var(--accent)':''}"/>
           <input class="set-inp" type="number" placeholder="${ex.reps}" value="${s.reps}" min="0" onchange="updateSet('${eid}',${i},'reps',this.value)"/>
           <button class="set-ok${s.done?' done':''}" onclick="toggleSet('${eid}',${i})">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           </button>
-        </div>
-      `).join('')}
+        </div>`;
+      }).join('')}
       <div style="padding:8px 14px;display:flex;gap:8px">
         <button class="btn-ghost" style="font-size:12px;padding:7px 12px" onclick="startRest()">⏱ Repos</button>
         <button class="btn-ghost" style="font-size:12px;padding:7px 12px" onclick="addSetToEx('${eid}')">+ Série</button>
@@ -875,6 +975,67 @@ function renderRun(){
   }).join('');
 }
 
+// ===================== EXERCISE HISTORY =====================
+function getExerciseHistory(eid){
+  const hist=[];
+  ST.sessions.filter(s=>s.sets&&s.sets[eid]).forEach(s=>{
+    const done=s.sets[eid].filter(x=>x.done&&x.kg&&x.reps);
+    if(!done.length) return;
+    const maxKg=Math.max(...done.map(x=>parseFloat(x.kg)||0));
+    const totalVol=done.reduce((a,x)=>(a+(parseFloat(x.kg)||0)*(parseInt(x.reps)||0)),0);
+    hist.push({date:s.date,maxKg,totalVol,sets:done});
+  });
+  return hist.sort((a,b)=>new Date(a.date)-new Date(b.date));
+}
+
+function openExHistory(eid){
+  const ex=ST.exercises.find(e=>e.id===eid);
+  if(!ex) return;
+  const hist=getExerciseHistory(eid);
+  document.getElementById('exh-title').textContent=ex.name;
+  const c=document.getElementById('exh-content');
+  if(!hist.length){c.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">Aucune séance enregistrée pour cet exercice.</div>';openModal('modal-ex-history');return;}
+  const W=300,H=80,pad=14;
+  const kgs=hist.map(h=>h.maxKg);
+  const minK=Math.min(...kgs),maxK=Math.max(...kgs),rangeK=maxK-minK||1;
+  const pts=hist.map((h,i)=>{
+    const x=pad+(i/(Math.max(hist.length-1,1)))*(W-pad*2);
+    const y=pad+(1-(h.maxKg-minK)/rangeK)*(H-pad*2);
+    return [x.toFixed(1),y.toFixed(1)];
+  });
+  const diff=kgs[kgs.length-1]-kgs[0];
+  const diffStr=(diff>=0?'+':'')+diff.toFixed(1)+'kg depuis le début';
+  const diffColor=diff>0?'var(--green)':diff<0?'var(--red)':'var(--muted)';
+  const svgPts=pts.map(p=>p.join(',')).join(' ');
+  const chartSvg=hist.length>=2
+    ?`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;margin-bottom:4px">
+        <polyline points="${svgPts}" fill="none" stroke="#C8F04A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        ${pts.map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="4" fill="#C8F04A"/><text x="${x}" y="${(parseFloat(y)-7).toFixed(0)}" text-anchor="middle" fill="#888" font-size="9" font-family="DM Sans,sans-serif">${kgs[i]}</text>`).join('')}
+      </svg>` :'';
+  const rows=[...hist].reverse().slice(0,10).map(h=>{
+    const d=new Date(h.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:12px;color:var(--muted)">${d}</span>
+      <div><span style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent)">${h.maxKg} kg</span><span style="font-size:11px;color:var(--muted);margin-left:6px">vol. ${Math.round(h.totalVol)}kg</span></div>
+    </div>`;
+  }).join('');
+  c.innerHTML=`
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <div style="flex:1;background:var(--card);border-radius:var(--r12);padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Meilleur poids</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--accent)">${Math.max(...kgs)} kg</div>
+      </div>
+      <div style="flex:1;background:var(--card);border-radius:var(--r12);padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Progression</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:${diffColor}">${diffStr}</div>
+      </div>
+    </div>
+    ${chartSvg}
+    <div style="font-size:11px;color:var(--muted);margin:4px 0 8px">${hist.length} séance${hist.length>1?'s':''} enregistrée${hist.length>1?'s':''}</div>
+    ${rows}`;
+  openModal('modal-ex-history');
+}
+
 // ===================== ANALYTICS =====================
 function drawRadar(scores){
   // scores: array of {label, value 0-100}
@@ -969,15 +1130,47 @@ function renderAnalytics(){
     <span class="bar-label">${w.label}</span>
   </div>`).join('');
 
+  // --- Volume par groupe musculaire ---
+  const muscleVol=getWeeklyVolumeByMuscle();
+  const muscleAlerts=getMuscleAlerts();
+  const mvc=document.getElementById('muscle-vol-chart');
+  const allMuscles=['Pectoraux','\u00c9paules','Triceps','Dos','Biceps','Jambes','Abdos'];
+  const maxSets=Math.max(...allMuscles.map(m=>(muscleVol[m]||{sets:0}).sets),1,20);
+  mvc.innerHTML=allMuscles.map(m=>{
+    const data=muscleVol[m]||{sets:0,vol:0};
+    const pct=Math.round((data.sets/maxSets)*100);
+    const alert=muscleAlerts.find(a=>a.muscle===m);
+    const color=alert?.type==='over'?'var(--red)':alert?.type==='missing'?'var(--muted2)':'var(--accent)';
+    const badge=alert?.type==='over'?'<span style="font-size:10px;color:var(--red);margin-left:6px">\u26a0\ufe0f surcharge</span>':alert?.type==='missing'?'<span style="font-size:10px;color:var(--muted);margin-left:6px">\u2014 pas touch\u00e9</span>':'';
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500">${m}${badge}</span>
+        <span style="font-size:11px;color:var(--muted)">${data.sets} s\u00e9rie${data.sets>1?'s':''}</span>
+      </div>
+      <div style="height:7px;background:var(--surface);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .5s"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // --- Records personnels cliquables ---
   const prl=document.getElementById('pr-list');
   const prData=ST.exercises.map(ex=>({ex,pr:getBestPR(ex.id)})).filter(x=>x.pr);
   document.getElementById('an-pr').textContent=prData.length;
-  if(!prData.length){prl.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Lance des séances pour voir tes records !</div>';}
+  if(!prData.length){prl.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Lance des s\u00e9ances pour voir tes records !</div>';}
   else{
-    prl.innerHTML=prData.map(({ex,pr})=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div><div style="font-weight:500;font-size:13px">${ex.name}</div><div style="font-size:11px;color:var(--muted)">${ex.muscle}</div></div>
-      <div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--accent)">${pr.kg} kg</div><div style="font-size:11px;color:var(--muted)">× ${pr.reps} reps</div></div>
-    </div>`).join('');
+    prl.innerHTML=prData.map(({ex,pr})=>{
+      const hist=getExerciseHistory(ex.id);
+      const trend=hist.length>=2?(hist[hist.length-1].maxKg>hist[0].maxKg?'\u2191':'\u2192'):'\u2014';
+      const trendColor=trend==='\u2191'?'var(--green)':'var(--muted)';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openExHistory('${ex.id}')">
+        <div><div style="font-weight:500;font-size:13px">${ex.name}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${ex.muscle} \u00b7 ${hist.length} s\u00e9ance${hist.length>1?'s':''}</div></div>
+        <div style="text-align:right;display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px;color:${trendColor};font-weight:700">${trend}</span>
+          <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--accent)">${pr.kg} kg</div><div style="font-size:11px;color:var(--muted)">\u00d7 ${pr.reps} reps</div></div>
+        </div>
+      </div>`;
+    }).join('');
   }
 
   const fsv=document.getElementById('feel-svg');
